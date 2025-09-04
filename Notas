@@ -1,0 +1,5 @@
+userController.index = traer todos
+userController.show= muestra uno
+userController.create
+userController.update
+userController.delete
