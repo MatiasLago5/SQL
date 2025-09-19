@@ -3,13 +3,12 @@ const app = express();
 const userController = require("./controllers/userController");
 const articleController = require("./controllers/articleController");
 const { sequelize: orm } = require("./models");
+const { requireRole, articleOwnerOrAdmin } = require("./middleware/authz");
+const { Article } = require("./models");
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
+// User routes
 app.get("/users", userController.index);
 app.get("/users/:id", userController.show);
 app.post("/users", userController.create);
@@ -19,9 +18,9 @@ app.delete("/users/:id", userController.delete);
 // Article routes
 app.get("/articles", articleController.index);
 app.get("/articles/:id", articleController.show);
-app.post("/articles", articleController.create);
-app.put("/articles/:id", articleController.update);
-app.delete("/articles/:id", articleController.delete);
+app.post("/articles", requireRole("admin"), articleController.create);
+app.put("/articles/:id", articleOwnerOrAdmin(Article), articleController.update);
+app.delete("/articles/:id", articleOwnerOrAdmin(Article), articleController.delete);
 
 async function start() {
   try {
