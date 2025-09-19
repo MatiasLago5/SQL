@@ -55,5 +55,7 @@ module.exports = {
     if (!article) {
       return res.status(404).json({ error: "Article not found" });
     }
+    await article.destroy();
+    res.status(204).send();
   },
 };
